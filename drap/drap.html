@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        div {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: gray;
+            z-index: 99;
+        }
+        .box2{
+            left: 200px;
+            background: red;
+
+        }
+        .box3{
+            left: 400px;
+            background: blue;
+        }
+    </style>
+</head>
+<body>
+<div class="box1"></div>
+<div class="box2"></div>
+<div class="box3"></div>
+
+<script src="js/utils.js"></script>
+<script src="js/publishSubscribe.js"></script>
+<script src="js/drap.js"></script>
+<script src="js/mainTimer.js"></script>
+<script src="js/drapControlUtils.js"></script>
+<script>
+    let drapList = [],eleList = [];
+    for(let i = 0; i < 3; i++){
+        let ele = document.querySelector(`.box${i+1}`);
+        var drap = new Drap(ele);
+        eleList.push(ele);
+        drapList.push(drap);
+
+        drapList[i].add("down", DrapControlUtils.initDataAnimate,{
+            minX:0,
+            maxX:document.documentElement.clientWidth - eleList[i].offsetWidth,
+            minY:0,
+            maxY:document.documentElement.clientHeight - eleList[i].offsetHeight
+        });
+//        drapList[i].add("move", DrapControlUtils.computedMoveSpeed);// 这个move放上面
+        drapList[i].add("move", DrapControlUtils.handlerBoundary);//这个move放下面，到边界撞死的情况能好点
+//        drapList[i].add("up",DrapControlUtils.fromSpeedToFly_damping,{directionX:{}, directionY:{}});
+//        drapList[i].add("up",DrapControlUtils.gravity_rebound,{});
+    }
+
+    for(let i = 0, l = drapList.length; i < l; i++){
+        drapList[i].add("down",DrapControlUtils.changeZIndex,{
+            ary:eleList
+        });
+    }
+
+
+
+
+</script>
+</body>
+</html>
